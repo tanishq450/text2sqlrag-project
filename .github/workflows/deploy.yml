@@ -33,7 +33,7 @@ jobs:
           echo "   • AWS Region: ${{ env.AWS_REGION }}"
           echo "   • ECR Repository: ${{ env.ECR_REPOSITORY }}"
           echo "   • Lambda Function: ${{ env.LAMBDA_FUNCTION }}"
-          echo "   • Platform: linux/arm64"
+          echo "   • Platform: linux/amd64"
           echo ""
           echo "⏱️  Estimated deployment time: 2-8 minutes (cached: ~2 min, first build: ~5-8 min)"
           echo "=========================================="
@@ -41,7 +41,7 @@ jobs:
 
       - name: Set up QEMU
         run: |
-          echo "🔧 Setting up QEMU for ARM64 emulation..."
+          echo "🔧 Setting up QEMU for x86-64 emulation..."
 
       - name: Set up QEMU (action)
         uses: docker/setup-qemu-action@v3
@@ -101,12 +101,12 @@ jobs:
         with:
           context: .
           file: Dockerfile.lambda
-          platforms: linux/arm64
+          platforms: linux/amd64
           push: true
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:arm64
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:amd64
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
@@ -117,8 +117,8 @@ jobs:
           echo "✅ All images pushed to ECR successfully!"
           echo "=========================================="
           echo "Image URI: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
-          echo "Tags: ${{ github.sha }}, latest, arm64"
-          echo "Platform: linux/arm64"
+          echo "Tags: ${{ github.sha }}, latest, amd64"
+          echo "Platform: linux/amd64"
           echo ""
 
       - name: Update Lambda function
@@ -132,7 +132,7 @@ jobs:
           echo "=========================================="
           echo "Function Name: ${{ env.LAMBDA_FUNCTION }}"
           echo "Image URI: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          echo "Architecture: ARM64"
+          echo "Architecture: x86-64"
           echo "Region: ${{ env.AWS_REGION }}"
           echo ""
 
@@ -142,7 +142,7 @@ jobs:
           aws lambda update-function-code \
             --function-name ${{ env.LAMBDA_FUNCTION }} \
             --image-uri $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            --architectures arm64
+            --architectures x86_64
           echo "✅ Update command sent!"
           echo ""
 
@@ -346,7 +346,7 @@ jobs:
           echo "🎉 Your Lambda function is live and responding!"
           echo ""
           echo "📊 Deployment Summary:"
-          echo "   • Docker Image: Built for ARM64"
+          echo "   • Docker Image: Built for x86-64 (AMD64)"
           echo "   • Lambda: Updated successfully"
           echo "   • Health Check: ✅ Passing"
           echo "   • Info Endpoint: ✅ Passing"
