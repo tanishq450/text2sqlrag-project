@@ -92,6 +92,11 @@ RUN dnf install -y \
     poppler \
     poppler-utils \
     poppler-glib \
+    cairo \
+    pango \
+    freetype \
+    harfbuzz \
+    fontconfig \
     mesa-libGL \
     mesa-libGLU \
     mesa-libgbm \

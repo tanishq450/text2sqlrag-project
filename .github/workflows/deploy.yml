@@ -28,7 +28,7 @@ jobs:
           sudo rm -rf /opt/hostedtoolcache
           sudo docker system prune -af
           df -h
-          echo  Disk cleanup completed"
+          echo  "Disk cleanup completed"
 
 
 
